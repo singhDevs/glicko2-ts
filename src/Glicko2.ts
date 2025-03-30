@@ -42,8 +42,10 @@ export class Glicko2{
         const newMu = getNewRating(muPlayer, newPhiPlayer, phiOpponent, this.score, E);
 
         const newRating = newMu * SCALE_FACTOR + BASE_RATING;
-        const newRD = newPhiPlayer * SCALE_FACTOR;
+        const ratingChange = newRating - this.playerRating.rating;
+        const boundedNewRating = this.playerRating.rating + Math.max(-110, Math.min(110, ratingChange));
+        const newRD = Math.min(250, newPhiPlayer * SCALE_FACTOR);
 
-        return {newRating, newRD, newSigma};
+        return {boundedNewRating, newRD, newSigma};
     }
 };

@@ -9,9 +9,8 @@ import {
 function adjustRDForTime(player: PlayerRating, currentTime: Date): number {
     const t = (currentTime.getTime() - player.lastGameTime.getTime()) / (1000 * 60 * 60 * 24 * 30); // Convert time to months
     const phi = player.rd / SCALE_FACTOR;                       // Convert RD to Glicko scale
-    const cScaled = C;
-    const phiNew = Math.sqrt(phi ** 2 + (cScaled ** 2 * t));    // Increase RD based on time
-    return phiNew * SCALE_FACTOR;                               // Convert back to rating scale & retunring new RD
+    const phiNew = Math.sqrt(phi ** 2 + (C ** 2 * t));    // Increase RD based on time
+    return Math.min(350, phiNew * SCALE_FACTOR);                               // Convert back to rating scale & returning new RD
 }
 
 function g(phi: number) {
