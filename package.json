@@ -1,0 +1,17 @@
+{
+  "name": "glicko2-ts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/index.js"
+  },
+  "keywords": [],
+  "author": "singhDevs",
+  "license": "ISC",
+  "description": "A TypeScript implementation of the Glicko-2 rating system. Fractional periods used to allow for more frequent rating updates.",
+  "devDependencies": {
+    "@types/node": "^22.13.11",
+    "typescript": "^5.8.2"
+  }
+}
