@@ -1,12 +1,13 @@
 import { Glicko2 } from './Glicko2';
-import PlayerRating from './PlayerRating';
+import { PlayerRating } from './PlayerRating';
 import { C } from './constants';
 import { adjustRDForTime } from './glickoHelper';
+import { ResultType } from './ResultType';
 
 function updateRatings(
     whitePlayer: PlayerRating,
     blackPlayer: PlayerRating,
-    result: 'w' | 'b' | 'd',
+    result: ResultType,
     currentTime: Date
 ): { newRatingWhite: PlayerRating; newRatingBlack: PlayerRating } {
     // Adjust RD for time elapsed
@@ -14,11 +15,11 @@ function updateRatings(
     blackPlayer.rd = adjustRDForTime(blackPlayer, currentTime);
 
     let whiteScore, blackScore;
-    if (result == 'w') {
+    if (result === ResultType.WHITE) {
         whiteScore = 1;
         blackScore = 0;
     }
-    else if (result == 'b') {
+    else if (result === ResultType.BLACK) {
         whiteScore = 0;
         blackScore = 1;
     }
@@ -38,7 +39,7 @@ function updateRatings(
     whitePlayer.rd = whiteResult.newRD;
     whitePlayer.volatility = whiteResult.newSigma;
     whitePlayer.lastGameTime = currentTime;
-    
+
     //Updating Black data
     blackPlayer.rating = blackResult.boundedNewRating;
     blackPlayer.rd = blackResult.newRD;
@@ -52,10 +53,10 @@ function updateRatings(
 const playerWhite: PlayerRating = { rating: 1800, rd: 50, volatility: 0.06, lastGameTime: new Date('2025-02-01') };
 const playerBlack: PlayerRating = { rating: 1250, rd: 150, volatility: 0.06, lastGameTime: new Date('2024-03-20') };
 
-const oldRatings = { playerWhite: {...playerWhite}, playerBlack: {...playerBlack} };
+const oldRatings = { playerWhite: { ...playerWhite }, playerBlack: { ...playerBlack } };
 // console.log('Old ratings:', { playerWhite, playerBlack });
 
-const result = updateRatings(playerWhite, playerBlack, 'b', new Date());
+const result = updateRatings(playerWhite, playerBlack, ResultType.BLACK, new Date());
 
 // console.log('Updated ratings:', result);
 
@@ -66,4 +67,6 @@ console.log('Rating Differences:')
 console.log('White:', playerWhite.rating - oldRatings.playerWhite.rating);
 console.log('Black:', playerBlack.rating - oldRatings.playerBlack.rating);
 
-export { PlayerRating, updateRatings };
+export * from './PlayerRating';
+export { ResultType } from './ResultType';
+export { updateRatings };

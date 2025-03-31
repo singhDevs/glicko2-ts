@@ -2,6 +2,7 @@
   "name": "glicko2-ts",
   "version": "1.0.0",
   "main": "index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "start": "tsc && node dist/index.js"

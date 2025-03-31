@@ -1,4 +1,4 @@
-import PlayerRating from './PlayerRating';
+import {PlayerRating} from './PlayerRating';
 import {
     SCALE_FACTOR,
     C,
