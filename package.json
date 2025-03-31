@@ -7,6 +7,12 @@
     "build": "tsc",
     "start": "tsc && node dist/index.js"
   },
+  "files": [
+    "src",
+    "types",
+    "index.js",
+    "README.md"
+  ],
   "keywords": [],
   "author": "singhDevs",
   "license": "ISC",
