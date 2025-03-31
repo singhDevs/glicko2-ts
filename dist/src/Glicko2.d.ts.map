@@ -1,0 +1,1 @@
+{"version":3,"file":"Glicko2.d.ts","sourceRoot":"","sources":["../../src/Glicko2.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,YAAY,EAAC,MAAM,gBAAgB,CAAC;AAgB5C,qBAAa,OAAO;IAChB,YAAY,EAAE,YAAY,CAAC;IAC3B,cAAc,EAAE,YAAY,CAAC;IAC7B,KAAK,EAAE,MAAM,CAAC;gBACF,YAAY,EAAE,YAAY,EAAE,cAAc,EAAE,YAAY,EAAE,KAAK,EAAE,MAAM;IAMnF,YAAY;;;;;CAwBf"}

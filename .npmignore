@@ -1,0 +1,3 @@
+# Exclude build artifacts, tests, etc., but keep essential files
+node_modules/
+*.log
