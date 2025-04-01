@@ -105,3 +105,6 @@ export enum ResultType {
 ```
 ## References
 Glicko-2 Paper by **Professor Mark E. Glickman**: [Glicko-2 paper](https://www.glicko.net/glicko/glicko2.pdf)
+
+## License
+This project is licensed under the MIT license. See the [LICENSE](https://github.com/singhDevs/glicko2-ts/blob/main/LICENSE) file for more info.
