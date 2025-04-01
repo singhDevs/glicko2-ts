@@ -3,16 +3,16 @@ A robust and adaptable Glicko-2 rating system library implemented in TypeScript.
 
 ## Overview
 Glicko-2 builds on the traditional Elo and Glicko systems by introducing two key concepts:
-- Rating Deviation (RD): Quantifies the uncertainty in a player’s rating. Frequent play or recent games lead to lower RD, meaning more confidence in the rating.
-- Volatility (σ): Measures the expected fluctuation in a player’s performance. Low volatility indicates stable performance, while high volatility suggests erratic results. This parameter allows the system to quickly adapt to changes in a player's form.
+- **Rating Deviation (RD)**: Quantifies the uncertainty in a player’s rating. Frequent play or recent games lead to lower RD, meaning more confidence in the rating.
+- **Volatility (σ)**: Measures the expected fluctuation in a player’s performance. Low volatility indicates stable performance, while high volatility suggests erratic results. This parameter allows the system to quickly adapt to changes in a player's form.
 
 These features combine to offer a dynamic and statistically sound method to assess a player's true skill level—even when game frequency or consistency varies.
 
 ## Features
-- Dynamic Rating Updates: Adjust ratings based on actual performance vs. expected outcomes.
-- Integrated Uncertainty: Uses RD to measure confidence in the rating.
-- Performance Volatility: Captures consistency with a volatility parameter that adjusts based on game results.
-- Asynchronous Updates: Easily integrate with systems that require asynchronous operations.
+- **Dynamic Rating Updates**: Adjust ratings based on actual performance vs. expected outcomes.
+- **Integrated Uncertainty**: Uses RD to measure confidence in the rating.
+- **Performance Volatility**: Captures consistency with a volatility parameter that adjusts based on game results.
+- **Asynchronous Updates**: Easily integrate with systems that require asynchronous operations.
 
 ## Installation
 Download the library from Github:
