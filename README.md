@@ -28,7 +28,7 @@ import { updateRatings, PlayerRating, ResultType } from 'glicko2-ts';
 ```
 
 ### Updating Player Ratings
-Use the updateRatings function to compute new ratings after a game between two players. The function requires:
+Use the ```updateRatings ``` function to compute new ratings after a game between two players. The function requires:
 - whitePlayer: The current rating for the white side.
 - blackPlayer: The current rating for the black side.
 - result: Outcome of the game, represented as a ResultType enum.
