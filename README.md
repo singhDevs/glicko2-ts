@@ -28,11 +28,11 @@ import { updateRatings, PlayerRating, ResultType } from 'glicko2-ts';
 ```
 
 ### Updating Player Ratings
-Use the ```updateRatings ``` function to compute new ratings after a game between two players. The function requires:
-- whitePlayer: The current rating for the white side.
-- blackPlayer: The current rating for the black side.
-- result: Outcome of the game, represented as a ResultType enum.
-- currentTime: A Date object for when the game was played, useful for RD adjustments.
+Use the ```updateRatings``` function to compute new ratings after a game between two players. The function requires:
+- ```whitePlayer```: The current rating for the white side.
+- ```blackPlayer```: The current rating for the black side.
+- ```result```: Outcome of the game, represented as a ResultType enum.
+- ```currentTime```: A Date object for when the game was played, useful for RD adjustments.
 **Example**
 ```typescript
 const whitePlayer: PlayerRating = {
@@ -78,11 +78,11 @@ async function updateRatings(
 ): Promise<{ newRatingWhite: PlayerRating; newRatingBlack: PlayerRating }>
 ```
 **Parameters**
-- whitePlayer (PlayerRating): The rating details for the white player.
-- blackPlayer (PlayerRating): The rating details for the black player.
-- result (ResultType): The outcome of the game (ResultType.WHITE, ResultType.BLACK, ResultType.DRAW)
-- currentTime (Date): The timestamp of the game, used for adjusting RD.
-**Returns**: A promise resolving to an object containing the updated ratings for both players.
+- ```whitePlayer``` (```PlayerRating```): The rating details for the white player.
+- ```blackPlayer``` (```PlayerRating```): The rating details for the black player.
+- ```result``` (```ResultType```): The outcome of the game (ResultType.WHITE, ResultType.BLACK, ResultType.DRAW)
+- ```currentTime``` (```Date```): The timestamp of the game, used for adjusting RD.<br/>
+**Returns**: A promise resolving to an object containing the updated ratings for both the players.
 
 ### ```PlayerRating``` interface
 Represents a player's rating information:
