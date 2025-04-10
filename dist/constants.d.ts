@@ -1,6 +1,6 @@
 declare const SCALE_FACTOR = 173.7178;
 declare const BASE_RATING = 1500;
-declare const INITIAL_RD = 350;
+declare const INITIAL_RD = 250;
 declare const INITIAL_VOLATILITY = 0.06;
 declare const C = 0.15;
 declare const TAU = 0.5;
