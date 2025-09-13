@@ -30,9 +30,35 @@ const glickoHelper_1 = require("./glickoHelper");
 const ResultType_1 = require("./ResultType");
 function updateRatings(whitePlayer, blackPlayer, result, currentTime) {
     return __awaiter(this, void 0, void 0, function* () {
-        // Adjust RD for time elapsed
-        whitePlayer.rd = (0, glickoHelper_1.adjustRDForTime)(whitePlayer, currentTime);
-        blackPlayer.rd = (0, glickoHelper_1.adjustRDForTime)(blackPlayer, currentTime);
+        // Input validation
+        if (!whitePlayer || !blackPlayer || !currentTime) {
+            throw new Error('Invalid input: whitePlayer, blackPlayer, and currentTime are required');
+        }
+        if (isNaN(whitePlayer.rating) || isNaN(blackPlayer.rating) ||
+            isNaN(whitePlayer.rd) || isNaN(blackPlayer.rd) ||
+            isNaN(whitePlayer.volatility) || isNaN(blackPlayer.volatility)) {
+            throw new Error('Invalid input: rating values must be numbers');
+        }
+        if (!(currentTime instanceof Date) || isNaN(currentTime.getTime())) {
+            throw new Error('Invalid input: currentTime must be a valid Date object');
+        }
+        if (!(whitePlayer.lastGameTime instanceof Date) || isNaN(whitePlayer.lastGameTime.getTime()) ||
+            !(blackPlayer.lastGameTime instanceof Date) || isNaN(blackPlayer.lastGameTime.getTime())) {
+            throw new Error('Invalid input: lastGameTime must be valid Date objects');
+        }
+        // Create copies to avoid mutating input objects (prevents memory leaks)
+        const whitePlayerCopy = {
+            rating: whitePlayer.rating,
+            rd: (0, glickoHelper_1.adjustRDForTime)(whitePlayer, currentTime),
+            volatility: whitePlayer.volatility,
+            lastGameTime: new Date(whitePlayer.lastGameTime.getTime())
+        };
+        const blackPlayerCopy = {
+            rating: blackPlayer.rating,
+            rd: (0, glickoHelper_1.adjustRDForTime)(blackPlayer, currentTime),
+            volatility: blackPlayer.volatility,
+            lastGameTime: new Date(blackPlayer.lastGameTime.getTime())
+        };
         let whiteScore, blackScore;
         if (result === ResultType_1.ResultType.WHITE) {
             whiteScore = 1;
@@ -46,35 +72,26 @@ function updateRatings(whitePlayer, blackPlayer, result, currentTime) {
             whiteScore = 0.5;
             blackScore = 0.5;
         }
-        const glickoWhite = new Glicko2_1.Glicko2(whitePlayer, blackPlayer, whiteScore);
-        const glickoBlack = new Glicko2_1.Glicko2(blackPlayer, whitePlayer, blackScore);
+        const glickoWhite = new Glicko2_1.Glicko2(whitePlayerCopy, blackPlayerCopy, whiteScore);
+        const glickoBlack = new Glicko2_1.Glicko2(blackPlayerCopy, whitePlayerCopy, blackScore);
         const whiteResult = glickoWhite.getNewRating();
         const blackResult = glickoBlack.getNewRating();
-        //Updating White data
-        whitePlayer.rating = whiteResult.boundedNewRating;
-        whitePlayer.rd = whiteResult.newRD;
-        whitePlayer.volatility = whiteResult.newSigma;
-        whitePlayer.lastGameTime = currentTime;
-        //Updating Black data
-        blackPlayer.rating = blackResult.boundedNewRating;
-        blackPlayer.rd = blackResult.newRD;
-        blackPlayer.volatility = blackResult.newSigma;
-        blackPlayer.lastGameTime = currentTime;
-        return { newRatingWhite: whitePlayer, newRatingBlack: blackPlayer };
+        // Create new PlayerRating objects instead of mutating inputs
+        const newRatingWhite = {
+            rating: whiteResult.boundedNewRating,
+            rd: whiteResult.newRD,
+            volatility: whiteResult.newSigma,
+            lastGameTime: new Date(currentTime.getTime())
+        };
+        const newRatingBlack = {
+            rating: blackResult.boundedNewRating,
+            rd: blackResult.newRD,
+            volatility: blackResult.newSigma,
+            lastGameTime: new Date(currentTime.getTime())
+        };
+        return { newRatingWhite, newRatingBlack };
     });
 }
-// const playerWhite: PlayerRating = { rating: 1800, rd: 50, volatility: 0.06, lastGameTime: new Date('2025-02-01') };
-// const playerBlack: PlayerRating = { rating: 1550, rd: 120, volatility: 0.06, lastGameTime: new Date('2025-01-20') };
-// const oldRatings = { playerWhite: { ...playerWhite }, playerBlack: { ...playerBlack } };
-// console.log('Old ratings:', { playerWhite, playerBlack });
-// const result = updateRatings(playerWhite, playerBlack, ResultType.BLACK, new Date());
-// console.log('Updated ratings:', result);
-// console.log(`C: ${C}`);
-// console.log(`pre-whiteRD: ${oldRatings.playerWhite.rd}, post-whiteRD: ${playerWhite.rd}`);
-// console.log(`pre-blackRD: ${oldRatings.playerBlack.rd}, post-blackRD: ${playerBlack.rd}`);
-// console.log('Rating Differences:')
-// console.log('White:', playerWhite.rating - oldRatings.playerWhite.rating);
-// console.log('Black:', playerBlack.rating - oldRatings.playerBlack.rating);
 __exportStar(require("./PlayerRating"), exports);
 var ResultType_2 = require("./ResultType");
 Object.defineProperty(exports, "ResultType", { enumerable: true, get: function () { return ResultType_2.ResultType; } });
