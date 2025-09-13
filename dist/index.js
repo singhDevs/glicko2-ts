@@ -63,18 +63,6 @@ function updateRatings(whitePlayer, blackPlayer, result, currentTime) {
         return { newRatingWhite: whitePlayer, newRatingBlack: blackPlayer };
     });
 }
-// const playerWhite: PlayerRating = { rating: 1800, rd: 50, volatility: 0.06, lastGameTime: new Date('2025-02-01') };
-// const playerBlack: PlayerRating = { rating: 1550, rd: 120, volatility: 0.06, lastGameTime: new Date('2025-01-20') };
-// const oldRatings = { playerWhite: { ...playerWhite }, playerBlack: { ...playerBlack } };
-// console.log('Old ratings:', { playerWhite, playerBlack });
-// const result = updateRatings(playerWhite, playerBlack, ResultType.BLACK, new Date());
-// console.log('Updated ratings:', result);
-// console.log(`C: ${C}`);
-// console.log(`pre-whiteRD: ${oldRatings.playerWhite.rd}, post-whiteRD: ${playerWhite.rd}`);
-// console.log(`pre-blackRD: ${oldRatings.playerBlack.rd}, post-blackRD: ${playerBlack.rd}`);
-// console.log('Rating Differences:')
-// console.log('White:', playerWhite.rating - oldRatings.playerWhite.rating);
-// console.log('Black:', playerBlack.rating - oldRatings.playerBlack.rating);
 __exportStar(require("./PlayerRating"), exports);
 var ResultType_2 = require("./ResultType");
 Object.defineProperty(exports, "ResultType", { enumerable: true, get: function () { return ResultType_2.ResultType; } });
