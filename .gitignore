@@ -116,3 +116,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Test files
+*-test.ts
+*-test.js
+safety-tests.*
+example-test.*
