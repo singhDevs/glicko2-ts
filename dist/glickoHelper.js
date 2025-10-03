@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.adjustRDForTime = adjustRDForTime;
-exports.g = g;
+exports.calculateGValue = calculateGValue;
 exports.expectedScore = expectedScore;
 exports.variance = variance;
 exports.delta = delta;
@@ -11,62 +11,62 @@ exports.getNewRD = getNewRD;
 exports.getNewRating = getNewRating;
 const constants_1 = require("./constants");
 function adjustRDForTime(player, currentTime) {
-    const t = (currentTime.getTime() - player.lastGameTime.getTime()) / (1000 * 60 * 60 * 24 * 30); // Convert time to months
+    const timeInMonths = (currentTime.getTime() - player.lastGameTime.getTime()) / (1000 * 60 * 60 * 24 * 30); // Convert time to months
     const phi = player.rd / constants_1.SCALE_FACTOR; // Convert RD to Glicko scale
-    const phiNew = Math.sqrt(Math.pow(phi, 2) + (Math.pow(constants_1.C, 2) * t)); // Increase RD based on time
+    const phiNew = Math.sqrt(Math.pow(phi, 2) + (Math.pow(constants_1.RD_INCREASE_CONSTANT, 2) * timeInMonths)); // Increase RD based on time
     return Math.min(350, phiNew * constants_1.SCALE_FACTOR); // Convert back to rating scale & returning new RD
 }
-function g(phi) {
+function calculateGValue(phi) {
     const denominator = Math.sqrt(1 + (3 * (Math.pow(phi, 2)) / (Math.pow(Math.PI, 2))));
     return 1 / denominator;
 }
 function expectedScore(phiOpponent, playerRating, opponentRating) {
-    const denominator = 1 + Math.exp(-g(phiOpponent) * (playerRating - opponentRating));
+    const denominator = 1 + Math.exp(-calculateGValue(phiOpponent) * (playerRating - opponentRating));
     return 1 / denominator;
 }
 function variance(phiOpponent, expectedScore) {
-    const denominator = (Math.pow(g(phiOpponent), 2)) * expectedScore * (1 - expectedScore);
+    const denominator = (Math.pow(calculateGValue(phiOpponent), 2)) * expectedScore * (1 - expectedScore);
     return 1 / denominator;
 }
 function delta(variance, phiOpponent, actualScore, expectedScore) {
-    return variance * g(phiOpponent) * (actualScore - expectedScore);
+    return variance * calculateGValue(phiOpponent) * (actualScore - expectedScore);
 }
 function updateVolatility(sigma, delta, phi, variance) {
-    const a = Math.log(Math.pow(sigma, 2));
-    let A = a;
-    let B;
+    const initialA = Math.log(Math.pow(sigma, 2));
+    let iterationA = initialA;
+    let iterationB;
     if ((Math.pow(delta, 2)) > (Math.pow(phi, 2)) + variance) {
-        B = Math.log((Math.pow(delta, 2)) - (Math.pow(phi, 2)) - variance);
+        iterationB = Math.log((Math.pow(delta, 2)) - (Math.pow(phi, 2)) - variance);
     }
     else {
-        let k = 1;
-        while (f(a - k * constants_1.TAU, sigma, delta, phi, variance, a) < 0) {
-            k++;
+        let multiplier = 1;
+        while (volatilityFunction(initialA - multiplier * constants_1.VOLATILITY_CONSTRAINT, sigma, delta, phi, variance, initialA) < 0) {
+            multiplier++;
         }
-        B = a - k * constants_1.TAU;
+        iterationB = initialA - multiplier * constants_1.VOLATILITY_CONSTRAINT;
     }
-    let fA = f(A, sigma, delta, phi, variance, a);
-    let fB = f(B, sigma, delta, phi, variance, a);
-    while (Math.abs(B - A) > constants_1.EPSILON) {
-        const C = A + ((A - B) * fA / (fB - fA));
-        const fC = f(C, sigma, delta, phi, variance, a);
-        if (fC * fB <= 0) {
-            A = B;
-            fA = fB;
+    let functionValueA = volatilityFunction(iterationA, sigma, delta, phi, variance, initialA);
+    let functionValueB = volatilityFunction(iterationB, sigma, delta, phi, variance, initialA);
+    while (Math.abs(iterationB - iterationA) > constants_1.CONVERGENCE_TOLERANCE) {
+        const iterationC = iterationA + ((iterationA - iterationB) * functionValueA / (functionValueB - functionValueA));
+        const functionValueC = volatilityFunction(iterationC, sigma, delta, phi, variance, initialA);
+        if (functionValueC * functionValueB <= 0) {
+            iterationA = iterationB;
+            functionValueA = functionValueB;
         }
         else {
-            fA /= 2;
+            functionValueA /= 2;
         }
-        B = C;
-        fB = fC;
+        iterationB = iterationC;
+        functionValueB = functionValueC;
     }
-    const newSigma = Math.exp(A / 2);
+    const newSigma = Math.exp(iterationA / 2);
     return newSigma;
 }
-function f(x, sigma, delta, phi, variance, a) {
-    const i = Math.exp(x) * ((Math.pow(delta, 2)) - (Math.pow(phi, 2)) - variance - Math.exp(x)) / (2 * (Math.pow(((Math.pow(phi, 2)) + variance + Math.exp(x)), 2)));
-    const j = (x - a) / (Math.pow(constants_1.TAU, 2));
-    return i - j;
+function volatilityFunction(x, sigma, delta, phi, variance, initialA) {
+    const firstTerm = Math.exp(x) * ((Math.pow(delta, 2)) - (Math.pow(phi, 2)) - variance - Math.exp(x)) / (2 * (Math.pow(((Math.pow(phi, 2)) + variance + Math.exp(x)), 2)));
+    const secondTerm = (x - initialA) / (Math.pow(constants_1.VOLATILITY_CONSTRAINT, 2));
+    return firstTerm - secondTerm;
 }
 function getPreUpdateRD(phiPlayer, newSigma) {
     return Math.sqrt((Math.pow(phiPlayer, 2)) + (Math.pow(newSigma, 2)));
@@ -76,5 +76,5 @@ function getNewRD(preUpdateRD, variance) {
     return 1 / denominator;
 }
 function getNewRating(mu, newRD, phiOpponent, score, expectedScore) {
-    return mu + (Math.pow(newRD, 2)) * g(phiOpponent) * (score - expectedScore);
+    return mu + (Math.pow(newRD, 2)) * calculateGValue(phiOpponent) * (score - expectedScore);
 }
