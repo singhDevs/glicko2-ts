@@ -4,7 +4,7 @@ import {
     BASE_RATING
 } from './constants';
 import {
-    g,
+    calculateGValue,
     expectedScore,
     variance,
     delta,
@@ -31,15 +31,14 @@ export class Glicko2{
         const muOpponent = (this.opponentRating.rating - BASE_RATING)/SCALE_FACTOR;
         const phiOpponent = this.opponentRating.rd/SCALE_FACTOR;
 
-        const gFunction = g(phiPlayer);
-        const E = expectedScore(phiOpponent, muPlayer, muOpponent);
-        const v = variance(phiOpponent, E);
-        const del = delta(v, phiOpponent, this.score, E);
-        const newSigma = updateVolatility(sigma, del, phiPlayer, v);
+        const expectedScoreValue = expectedScore(phiOpponent, muPlayer, muOpponent);
+        const varianceValue = variance(phiOpponent, expectedScoreValue);
+        const deltaValue = delta(varianceValue, phiOpponent, this.score, expectedScoreValue);
+        const newSigma = updateVolatility(sigma, deltaValue, phiPlayer, varianceValue);
 
         const preUpdateRD = getPreUpdateRD(phiPlayer, newSigma);
-        const newPhiPlayer = getNewRD(preUpdateRD, v);
-        const newMu = getNewRating(muPlayer, newPhiPlayer, phiOpponent, this.score, E);
+        const newPhiPlayer = getNewRD(preUpdateRD, varianceValue);
+        const newMu = getNewRating(muPlayer, newPhiPlayer, phiOpponent, this.score, expectedScoreValue);
 
         const newRating = newMu * SCALE_FACTOR + BASE_RATING;
         const ratingChange = newRating - this.playerRating.rating;
